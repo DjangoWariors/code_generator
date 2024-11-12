@@ -22,8 +22,11 @@ def create_batch_unique_codes(target_count=100000000, length=6, batch_size=1000,
     while total_generated < target_count:
         codes = set()
 
+        # Adjust batch_size to not exceed the target_count
+        current_batch_size = min(batch_size, target_count - total_generated)
+
         # Step 1: Generate a batch of unique codes
-        while len(codes) < batch_size:
+        while len(codes) < current_batch_size:  # <--- Change made here
             code = ''.join(secrets.choice(characters) for _ in range(length))
             codes.add(code)
 
@@ -87,7 +90,7 @@ def export_unique_codes_to_csv(request, batch_size=1000000):
             if row_index < len(column):
                 row.append(column[row_index])
             else:
-                row.append('')  # Add an empty value if the column does not have enough values
+                row.append('')
         writer.writerow(row)
 
     return response
